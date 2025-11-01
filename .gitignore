@@ -1,2 +1,5 @@
 backend/sql/schema_and_seed.sql
 backend/.env
+backend/composer.json
+backend/composer.lock
+backend/vendor

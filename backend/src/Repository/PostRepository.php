@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../Database.php';
+require_once __DIR__ . '/../../public/config/database.php';
 require_once __DIR__ . '/../Model/Post.php';
 
 class PostRepository {
