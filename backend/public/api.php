@@ -1,5 +1,6 @@
 <?php
 
+// Handling CORS
 header("Access-Control-Allow-Origin: *"); 
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
@@ -10,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once __DIR__ . '/../src/helpers.php';
+require_once __DIR__ . '/config/helpers.php';
 require_once __DIR__ . '/../src/Repository/PostRepository.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -40,6 +41,10 @@ if($method === 'POST' && $path === '/posts'){
     $title = $payload['title'] ?? '';
     $body = $payload['body'] ?? '';
     
+    if(!is_string($title) || !is_string($body)){
+        jsonError(409, 'Invalid format for title and body.');
+    }
+
     if(!$title || !$body){
         jsonError(409, 'title and body required');
     }
