@@ -83,17 +83,18 @@
                         <div class="modal-body container">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="title">
+                                <input type="text" class="form-control" name="title" id="title" required>
                             </div>
                         </div>
                         <div>
                             <label for="body" class="form-label container">Content</label>
                         </div>
                         <div class="form-floating m-3">
-                            <textarea class="form-control" id="body" style="height: 100px"></textarea>
+                            <textarea class="form-control" name="body" id="body" style="height: 100px"
+                                required></textarea>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="btn-save">Save</button>
+                            <button type="button" disabled class="btn btn-primary" id="btn-save">Save</button>
                         </div>
                     </div>
                 </div>
@@ -154,6 +155,16 @@
             let body = $("#body").val()
 
             createPost(title, body)
+        })
+
+        $("#title, #body").on("keyup", function() {
+            let title = $("#title").val()
+            let body = $("#body").val()
+
+            if (title.trim() !== '' && body.trim() !== '') {
+                $("#btn-save").prop('disabled', false);
+            } else
+                $("#btn-save").prop('disabled', true);
         })
 
         $("#search").on("keyup", function() {
