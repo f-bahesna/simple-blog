@@ -33,6 +33,15 @@ class PostRepository {
         return $row ? Post::fromArray($row) : null;
     }
 
+    public function findOneByTitleLike(string $title): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM posts WHERE title LIKE :title");
+        $stmt->execute(['title' => "%$title%"]);
+        $row = $stmt->fetchAll();
+       
+        return array_map(fn ($r) => Post::fromArray($r), $row);
+    }
+
     public function create(string $title, string $body): Post {
         $stmt = $this->db->prepare("INSERT INTO posts (title, body) VALUES (:title, :body)");
         $stmt->execute([':title' => $title, ':body' => $body]);

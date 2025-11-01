@@ -25,6 +25,13 @@ $postRepository = new PostRepository();
 if($method === 'GET' && $path === '/posts'){
     $posts = $postRepository->all();
 
+    // $params = $_SERVER['QUERY_STRING'];
+   
+    if(isset($_GET['value'])){
+        $params = $_GET['value'];
+        $posts = $postRepository->findOneByTitleLike($params);
+    }
+
     $data = array_map(fn($d) => [
         'id' => $d->id,
         'title' => $d->title,
@@ -40,11 +47,11 @@ if($method === 'POST' && $path === '/posts'){
     
     $title = $payload['title'] ?? '';
     $body = $payload['body'] ?? '';
-    
+   
     if(!is_string($title) || !is_string($body)){
-        jsonError(409, 'Invalid format for title and body.');
+        jsonError(409, 'Invalid format for title or body.');
     }
-
+    
     if(!$title || !$body){
         jsonError(409, 'title and body required');
     }

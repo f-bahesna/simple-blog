@@ -4,16 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 
 <body>
     <div class="container main">
-        <nav class="navbar navbar-expand-lg bg-light">
+        <nav class="navbar navbar-expand-md bg-light fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Simple Blog</a>
+                <a class="navbar-brand" href="#">Simple Dashboard</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -25,19 +25,23 @@
                             <a class="nav-link active" aria-current="page" href="#">Home</a>
                         </li>
                     </ul>
-                    <form class="d-flex" role="search">
+                    <form class="d-flex">
                         <input class="form-control me-2" id="search" type="search" placeholder="Search"
                             aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                 </div>
             </div>
         </nav>
     </div>
-    <div class="container pt-5">
-        <div class="row">
+    <div class="container pt-lg-5">
+        <div class="row pt-5">
             <!-- left side -->
             <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12 d-flex justify-content-center position-relative" id="notification">
+                        <!-- notification status appears here -->
+                    </div>
+                </div>
                 <div class="row">
                     <!-- blog lists -->
                     <div class="container table-responsive py-4">
@@ -53,7 +57,9 @@
                                     <th scope="col">No</th>
                                     <th scope="col">Title</th>
                                     <th scope="col">Description</th>
-                                    <th scope="col">Action</th>
+                                    <th style="min-width: 30px; display: flex; justify-content: center;" scope="col">
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="row-container">
@@ -61,7 +67,6 @@
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-center align-items-center my-5" id="spinner"></div>
-
                     </div>
                 </div>
             </div>
@@ -123,7 +128,6 @@
         const container = $("#row-container")
 
         loadPosts()
-
         async function loadPosts() {
             await showLoadingSpinner();
 
@@ -152,20 +156,66 @@
             createPost(title, body)
         })
 
+        $("#search").on("keyup", function() {
+            let value = $(this).val()
+            if (value === '') {
+                loadPosts()
+            }
+
+            search(value)
+        })
+
+        function search(value) {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8000/api/posts',
+                data: {
+                    value
+                },
+                success: function(response) {
+                    $("#row-container").html('')
+                    let html = ''
+                    response.data.map((blog, index) => {
+                        html += `
+                            <tr>
+                              <th scope="row">${index + 1}</th>
+                              <td>${blog.title}</td>
+                              <td>${blog.body}</td>
+                              <td style="display: flex; justify-content: center; align-items: center;">
+                              <button data-id="${blog.id}" type="button" class="btn btn-danger btn-delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                              </button>
+                              </td>
+                          </tr>
+                        `;
+
+                        container.html(html)
+                    })
+                },
+                error: function(err) {
+                    pushNotification('danger')
+                }
+            })
+        }
+
         function getPost() {
             $.ajax({
                 type: 'GET',
                 url: 'http://localhost:8000/api/posts',
                 success: function(response) {
+                    $("#row-container").html('')
                     response.data.map((blog, index) => {
                         const card = `
                             <tr>
                               <th scope="row">${index + 1}</th>
                               <td>${blog.title}</td>
                               <td>${blog.body}</td>
-                              <td>
-                              <button data-id="${blog.id}" type="button" class="btn btn-danger btn-delete container row col-md-6 mx-auto">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                              <td style="display: flex; justify-content: center; align-items: center;">
+                              <button data-id="${blog.id}" type="button" class="btn btn-danger btn-delete flex text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                                   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
                                 </svg>
@@ -176,6 +226,9 @@
 
                         container.append(card)
                     })
+                },
+                error: function(error) {
+                    console.log(error)
                 }
             })
         }
@@ -191,8 +244,9 @@
                     body
                 }),
                 success: function() {
+                    pushNotification('success', title, 'Successfully create Post ')
                     $(".modal").modal("hide")
-                    updatePostTable()
+                    refreshPostTable()
                     clearInput()
                 }
             })
@@ -203,12 +257,13 @@
                 method: 'DELETE',
                 url: 'http://localhost:8000/api/posts/' + id,
                 success: function() {
-                    updatePostTable()
+                    pushNotification('danger', '', 'Post Deleted ')
+                    refreshPostTable()
                 }
             })
         }
 
-        function updatePostTable() {
+        function refreshPostTable() {
             $("#row-container").html('')
             getPost()
         }
@@ -226,6 +281,29 @@
 
         function hideLoadingSpinner() {
             $("#spinner").html('')
+        }
+
+        function pushNotification(status, title, message) {
+            $("#notification").html(notificationStatus(status, title, message))
+
+            setTimeout(() => {
+                $("#notification").html('')
+            }, 3000);
+        }
+
+        function notificationStatus(status, title, message) {
+            switch (status) {
+                case 'success':
+                    return `<div class="alert alert-success position-absolute top-50" role="alert">
+                ${message + title}
+                        </div>`;
+                case 'danger':
+                    return `<div class="alert alert-danger position-absolute top-50" role="alert">
+                ${message + title}
+                        </div>`;
+                default:
+                    return '';
+            }
         }
 
         function clearInput() {
