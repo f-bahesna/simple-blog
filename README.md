@@ -7,18 +7,18 @@ This project contains a simple **PHP Backend** and **Frontend** for managing blo
 
 ## 📁 Project Structure
 
-```
-
+```bash
 project/
 ├── backend/
 │   ├── public/
-│   │   └── api.php
+│   │   └── api.php          # Backend entry point
 │   ├── sql/
-│   └── .env
+│   │   └── schema_and_seed.sql  # Database schema & seed data
+│   ├── src/                 # PHP source files
+│   ├── .env                 # Environment configuration
+│   └── composer.json        # Composer dependencies
 └── frontend/
-└── index.php
-
-````
+    └── index.php            # Frontend entry point
 
 ---
 
