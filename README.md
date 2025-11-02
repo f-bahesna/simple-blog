@@ -7,9 +7,8 @@ This project contains a simple **PHP Backend** and **Frontend** for managing blo
 
 ## 📁 Project Structure
 
-```bash
-
-project/
+```_
+simple-blog/
 ├── backend/
 │   ├── public/
 │   │   └── api.php          # Backend entry point
@@ -21,7 +20,7 @@ project/
 └── frontend/
     └── index.php            # Frontend entry point
 
----
+```
 
 ## ⚙️ How to Run the App
 
@@ -30,7 +29,7 @@ Go to the backend directory and install PHP dependencies:
 ```bash
 cd backend
 composer install
-````
+```
 
 ---
 
