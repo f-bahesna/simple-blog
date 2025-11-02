@@ -1,0 +1,11 @@
+@media (max-width: 768px) {
+  .phone-text {
+    font-size: 10px; 
+    height: 20px;
+  }
+}
+
+.sorting-icon:hover{
+    cursor: pointer;
+}
+

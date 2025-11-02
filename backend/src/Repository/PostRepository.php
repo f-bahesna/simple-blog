@@ -10,8 +10,10 @@ class PostRepository {
         $this->db = Database::getConnection();
     }
 
-    public function all(): array {
-        $stmt = $this->db->query("SELECT * FROM posts ORDER BY created_at ASC");
+    public function all(string $orderBy = 'ASC'): array {
+        $order = (strtoupper($orderBy) === 'ASC') ? 'ASC' : 'DESC';
+
+        $stmt = $this->db->query("SELECT * FROM posts ORDER BY created_at $order");
         $rows = $stmt->fetchAll();
 
         return array_map(fn ($r) => Post::fromArray($r), $rows);

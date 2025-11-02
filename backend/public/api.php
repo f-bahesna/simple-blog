@@ -23,11 +23,15 @@ $path = '/'. trim(substr($uri, strlen($base)), '/');
 $postRepository = new PostRepository();
 
 if($method === 'GET' && $path === '/posts'){
-    $posts = $postRepository->all();
 
-    // $params = $_SERVER['QUERY_STRING'];
+    if(isset($_GET['sort']) && $_GET['sort'] !== ''){
+        $sort = $_GET['sort'];
+        $posts = $postRepository->all($sort);
+    }else {
+        $posts = $postRepository->all();
+    }
    
-    if(isset($_GET['value'])){
+    if(isset($_GET['value']) && $_GET['value'] !== ''){
         $params = $_GET['value'];
         $posts = $postRepository->findOneByTitleLike($params);
     }

@@ -8,6 +8,7 @@ This project contains a simple **PHP Backend** and **Frontend** for managing blo
 ## 📁 Project Structure
 
 ```bash
+
 project/
 ├── backend/
 │   ├── public/
